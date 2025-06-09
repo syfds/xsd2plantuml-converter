@@ -22,7 +22,7 @@ public class App
 
         try {
             XsdReader xsdReader = new XsdReader();
-            EntityRelationshipModel model = xsdReader.readXsd(inputFilePath);
+            EntityRelationshipModel model = xsdReader.mapToModel(inputFilePath);
 
             String outputContent = new PlantUmlExporter().export(model);
             Files.writeString(Path.of(outputFilePath), outputContent);

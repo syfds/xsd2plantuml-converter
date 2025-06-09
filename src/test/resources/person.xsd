@@ -5,7 +5,7 @@
     <xs:element name="collection">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="object" type="objType" maxOccurs="unbounded"/>
+                <xs:element name="object" type="objType" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -14,8 +14,8 @@
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="born" type="xs:date"/>
-            <xs:element name="dead" type="xs:date" minOccurs="0"/>
-            <xs:element name="qualification" type="xs:string" minOccurs="0"/>
+            <xs:element name="dead" type="xs:date" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="qualification" type="xs:string" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID" use="required"/>
     </xs:complexType>

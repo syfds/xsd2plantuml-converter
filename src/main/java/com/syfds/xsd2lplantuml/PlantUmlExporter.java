@@ -16,8 +16,8 @@ public class PlantUmlExporter {
 
     private void addRelations(EntityRelationshipModel model, StringBuilder sb) {
         model.getRelationships().forEach(relation -> {
-            String source = relation.getSource().getUniqueName();
-            String target = relation.getTarget().getUniqueName();
+            String source = relation.getSource();
+            String target = relation.getTarget();
 
             RelationType type = relation.getType();
             sb.append(source).append(" ")

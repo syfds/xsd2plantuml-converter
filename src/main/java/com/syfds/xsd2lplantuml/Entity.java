@@ -6,8 +6,9 @@ import java.util.List;
 public class Entity {
 
     private String uniqueName;
+    private String type;
     private String comment;
-    private List<Attribute> attributeList;
+    private List<Attribute> attributeList = new ArrayList<>();
 
     public Entity(String uniqueName) {
         this.uniqueName = uniqueName;
@@ -48,5 +49,13 @@ public class Entity {
                 ", comment='" + comment + '\'' +
                 ", attributeList=" + attributeList +
                 '}';
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
