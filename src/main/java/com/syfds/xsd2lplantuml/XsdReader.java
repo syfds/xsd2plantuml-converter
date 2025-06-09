@@ -5,9 +5,7 @@ import org.xmlet.xsdparser.xsdelements.*;
 import org.xmlet.xsdparser.xsdelements.elementswrapper.NamedConcreteElement;
 import org.xmlet.xsdparser.xsdelements.elementswrapper.ReferenceBase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -19,28 +17,14 @@ public class XsdReader {
     }
 
     public EntityRelationshipModel map(XsdParser parser) {
-        List<Entity> entities = new ArrayList<>();
-        List<Relation> relationships = new ArrayList<>();
+        Set<Entity> entities = new HashSet<>();
+        Set<Relation> relationships = new HashSet<>();
 
         parser.getResultXsdElements().forEach(xsdElement -> {
             Entity entity = mapToEntity(xsdElement);
             entities.add(entity);
 
-            Optional.ofNullable(entity.getAttributeList())
-                    .ifPresent(attributes -> {
-                        attributes.forEach(attr -> {
-                            if (attr.isComplexType()) {
-                                relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
-
-                                XsdComplexType resolvedType = findComplexTypeByName(parser, attr.getType());
-                                Entity complextTypeAsEntity = mapToEntity(resolvedType);
-                                entities.add(complextTypeAsEntity);
-
-                                addRelations(complextTypeAsEntity, relationships);
-                            }
-                        });
-                    });
-
+            createEntitiesFromAttributesRecursively(parser, entity, relationships, entities);
 
             if (entity.getType() != null) {
                 relationships.add(new Relation(entity.getUniqueName(), entity.getType(), RelationType.TYPE_OF));
@@ -49,31 +33,56 @@ public class XsdReader {
                 entities.add(complextTypeAsEntity);
                 addRelations(complextTypeAsEntity, relationships);
             }
-//            if (xsdElement.getXsdComplexType() != null) {
-//                XsdComplexType complexType = xsdElement.getXsdComplexType();
-//                complexType.getAllXsdAttributes().forEach(child -> {
-//                    Relation relation = new Relation(element, mapAttribute(child), RelationType.ONE_TO_ONE);
-//                    relationships.add(relation);
-//                });
-//            }
         });
 
         return new EntityRelationshipModel(entities, relationships);
     }
 
-    private static void addRelations(Entity complextTypeAsEntity, List<Relation> relationships) {
-        Optional.ofNullable(complextTypeAsEntity.getAttributeList())
+    private void createEntitiesFromAttributesRecursively(XsdParser parser, Entity entity, Set<Relation> relationships, Set<Entity> allEntities) {
+        Optional.ofNullable(entity.getAttributeList())
                 .ifPresent(attributes -> {
                     attributes.forEach(attr -> {
                         if (attr.isComplexType()) {
-                            relationships.add(new Relation(complextTypeAsEntity.getUniqueName(), attr.getType(), attr.getRelationType()));
+                            relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
+                            if (attr.getInternalComplexType() != null) {
+//                                XsdAbstractElement childElement = attr.getInternalComplexType().getXsdChildElement();
+//                                if(childElement instanceof XsdSequence sequence){
+//                                    childElement.getXsdElements().forEach(element -> {
+//                                        if(element instanceof  XsdElement xsdElement) {
+//                                            Entity innerEntity = mapToEntity(xsdElement);
+//                                            allEntities.add(innerEntity);
+//                                            createEntitiesFromAttributesRecursively(parser, innerEntity, relationships, allEntities);
+//                                        }
+//                                    });
+//                                }
+                                Entity extraEntityForInnerComplexType = mapToEntity(attr.getInternalComplexType());
+                                allEntities.add(extraEntityForInnerComplexType);
+                                createEntitiesFromAttributesRecursively(parser, extraEntityForInnerComplexType, relationships, allEntities);
+                            } else {
+                                XsdComplexType resolvedType = findComplexTypeByName(parser, attr.getType());
+                                Entity complextTypeAsEntity = mapToEntity(resolvedType);
+                                allEntities.add(complextTypeAsEntity);
+
+                                createEntitiesFromAttributesRecursively(parser, complextTypeAsEntity, relationships, allEntities);
+                            }
+                        }
+                    });
+                });
+    }
+
+    private static void addRelations(Entity entity, Set<Relation> relationships) {
+        Optional.ofNullable(entity.getAttributeList())
+                .ifPresent(attributes -> {
+                    attributes.forEach(attr -> {
+                        if (attr.isComplexType()) {
+                            relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
                         }
                     });
                 });
     }
 
     private Entity mapToEntity(XsdComplexType resolvedType) {
-        Entity entity = new Entity(resolvedType.getName());
+        Entity entity = new Entity(resolvedType.getName() != null ? resolvedType.getName() : ((XsdNamedElements)resolvedType.getParent()).getName());
         entity.setComment(getDocumentation(resolvedType));
         resolvedType.getElements().forEach(elem -> {
             mapAttribute(elem, entity);
@@ -134,8 +143,20 @@ public class XsdReader {
 
     private static void mapNamedConcreteElement(NamedConcreteElement namedElement, Entity entity) {
         XsdElement xsdElement = (XsdElement) namedElement.getElement();
-        Attribute attr = new Attribute(namedElement.getName(), xsdElement.getType(), getDocumentation(namedElement.getElement()));
-        attr.setComplexType(xsdElement.getXsdComplexType() != null);
+        boolean isComplexType = xsdElement.getXsdComplexType() != null;
+        boolean isExternalComplexType = isComplexType && xsdElement.getXsdComplexType().getName() != null;
+
+
+        boolean isInnerComplexType = isComplexType && !isExternalComplexType;
+        Attribute attr;
+        if(isInnerComplexType){
+            attr = new Attribute(namedElement.getName(), namedElement.getName(), getDocumentation(namedElement.getElement()));
+            attr.setInternalComplexType(xsdElement.getXsdComplexType());
+        }else{
+            attr = new Attribute(namedElement.getName(), xsdElement.getType(), getDocumentation(namedElement.getElement()));
+        }
+
+        attr.setComplexType(isComplexType);
         attr.setRelationType(xsdElement.getMinOccurs(), xsdElement.getMaxOccurs());
         entity.addAttribute(attr);
     }

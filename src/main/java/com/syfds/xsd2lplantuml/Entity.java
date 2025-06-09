@@ -2,6 +2,7 @@ package com.syfds.xsd2lplantuml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Entity {
 
@@ -14,9 +15,18 @@ public class Entity {
         this.uniqueName = uniqueName;
     }
 
-    public Entity(String uniqueName, List<Attribute> attributeList) {
-        this.uniqueName = uniqueName;
-        this.attributeList = attributeList;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return Objects.equals(uniqueName, entity.uniqueName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueName);
     }
 
     public String getUniqueName() {

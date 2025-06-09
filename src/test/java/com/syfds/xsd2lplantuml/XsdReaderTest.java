@@ -15,9 +15,10 @@ public class XsdReaderTest {
         assertThat(model.getEntities()).hasSize(2);
 
         assertThat(model.getRelationships()).hasSize(1);
-        assertThat(model.getRelationships().get(0).getType()).isEqualTo(RelationType.TYPE_OF);
-        assertThat(model.getEntities().get(0).getUniqueName()).containsAnyOf("person", "personType");
-        assertThat(model.getEntities().get(1).getUniqueName()).containsAnyOf("person", "personType");
+        assertThat(model.getRelationships().iterator().next().getType()).isEqualTo(RelationType.TYPE_OF);
+        model.getEntities().forEach(elem -> {
+            assertThat(elem.getUniqueName()).containsAnyOf("person", "personType");
+        });
     }
 
     @Test
@@ -26,15 +27,15 @@ public class XsdReaderTest {
         assertThat(model.getEntities()).hasSize(1);
 
         assertThat(model.getRelationships()).isEmpty();
-        assertThat(model.getEntities().get(0).getUniqueName()).isEqualTo("person");
+        assertThat(model.getEntities().iterator().next().getUniqueName()).isEqualTo("person");
     }
 
     @Test
     public void multipleElementsAndRelations() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/person.xsd"));
-        assertThat(model.getEntities()).hasSize(4);
+        assertThat(model.getEntities()).hasSize(5);
 
-        assertThat(model.getRelationships()).hasSize(4);
+        assertThat(model.getRelationships()).hasSize(5);
     }
 
     @Test
