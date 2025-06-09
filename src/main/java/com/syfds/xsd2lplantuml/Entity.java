@@ -3,17 +3,18 @@ package com.syfds.xsd2lplantuml;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Element {
+public class Entity {
 
     private String uniqueName;
+    private String type;
     private String comment;
-    private List<Attribute> attributeList;
+    private List<Attribute> attributeList = new ArrayList<>();
 
-    public Element(String uniqueName) {
+    public Entity(String uniqueName) {
         this.uniqueName = uniqueName;
     }
 
-    public Element(String uniqueName, List<Attribute> attributeList) {
+    public Entity(String uniqueName, List<Attribute> attributeList) {
         this.uniqueName = uniqueName;
         this.attributeList = attributeList;
     }
@@ -48,5 +49,13 @@ public class Element {
                 ", comment='" + comment + '\'' +
                 ", attributeList=" + attributeList +
                 '}';
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

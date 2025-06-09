@@ -26,7 +26,15 @@
             <artifactId>xsdParser</artifactId>
             <version>1.2.19</version>
         </dependency>
+<!--        add dependency for assert4j -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.24.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
 
     <build>

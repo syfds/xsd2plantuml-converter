@@ -2,25 +2,42 @@ package com.syfds.xsd2lplantuml;
 
 public class Relation {
 
-    private Element source;
-    private Element target;
+    private String source;
+    private String target;
     private RelationType type;
 
-    public Relation(Element source, Element target, RelationType type) {
+    public Relation(String source, String target, RelationType type) {
         this.source = source;
         this.target = target;
         this.type = type;
     }
 
-    public Element getSource() {
+    public String getSource() {
         return source;
     }
 
-    public Element getTarget() {
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getTarget() {
         return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public RelationType getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Relation{" +
+                "source='" + source + '\'' +
+                ", target='" + target + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

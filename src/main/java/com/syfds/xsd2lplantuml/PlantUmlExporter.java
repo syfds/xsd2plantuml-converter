@@ -16,8 +16,8 @@ public class PlantUmlExporter {
 
     private void addRelations(EntityRelationshipModel model, StringBuilder sb) {
         model.getRelationships().forEach(relation -> {
-            String source = relation.getSource().getUniqueName();
-            String target = relation.getTarget().getUniqueName();
+            String source = relation.getSource();
+            String target = relation.getTarget();
 
             RelationType type = relation.getType();
             sb.append(source).append(" ")
@@ -28,9 +28,9 @@ public class PlantUmlExporter {
     }
 
     private static void addTypes(EntityRelationshipModel model, StringBuilder sb) {
-        for (Element element : model.getElements()) {
-            sb.append("entity \"").append(element.getUniqueName()).append("\" {\n");
-            for (Attribute attribute : element.getAttributeList()) {
+        for (Entity entity : model.getEntities()) {
+            sb.append("entity \"").append(entity.getUniqueName()).append("\" {\n");
+            for (Attribute attribute : entity.getAttributeList()) {
                 sb.append("  ").append(attribute.getName())
                   .append(" : ").append(attribute.getType());
                 if (attribute.getComment() != null && !attribute.getComment().isEmpty()) {
@@ -39,8 +39,8 @@ public class PlantUmlExporter {
                 sb.append("\n");
             }
             sb.append("}\n");
-            if (element.getComment() != null && !element.getComment().isEmpty()) {
-                sb.append("note top of ").append(element.getUniqueName()).append(": ").append(element.getComment()).append("\n");
+            if (entity.getComment() != null && !entity.getComment().isEmpty()) {
+                sb.append("note top of ").append(entity.getUniqueName()).append(": ").append(entity.getComment()).append("\n");
             }
         }
     }
