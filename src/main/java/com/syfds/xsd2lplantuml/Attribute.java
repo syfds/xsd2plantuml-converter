@@ -1,5 +1,6 @@
 package com.syfds.xsd2lplantuml;
 
+import org.xmlet.xsdparser.xsdelements.XsdComplexType;
 import org.xmlet.xsdparser.xsdelements.XsdElement;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Attribute {
     private String type;
     private XsdElement xsdType;
     private boolean isComplexType = false;
+    private XsdComplexType internalComplexType;
     private String comment;
     private RelationType relationType;
 
@@ -70,5 +72,13 @@ public class Attribute {
         } else if ((minOccurs == 0 || minOccurs == 1) && Objects.equals(maxOccurs, "unbounded")) {
             setRelationType(RelationType.ONE_TO_MANY);
         }
+    }
+
+    public void setInternalComplexType(XsdComplexType internalComplexType) {
+        this.internalComplexType = internalComplexType;
+    }
+
+    public XsdComplexType getInternalComplexType() {
+        return internalComplexType;
     }
 }

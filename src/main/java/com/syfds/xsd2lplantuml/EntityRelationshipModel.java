@@ -1,24 +1,25 @@
 package com.syfds.xsd2lplantuml;
 
 import java.util.List;
+import java.util.Set;
 
 public class EntityRelationshipModel {
 
-    private List<Entity> entities;
-    private List<Relation> relationships;
+    private Set<Entity> entities;
+    private Set<Relation> relationships;
 
 
 
-    public EntityRelationshipModel(List<Entity> entities, List<Relation> relationships) {
+    public EntityRelationshipModel(Set<Entity> entities, Set<Relation> relationships) {
         this.entities = entities;
         this.relationships = relationships;
     }
 
-    public List<Relation> getRelationships() {
+    public Set<Relation> getRelationships() {
         return relationships;
     }
 
-    public List<Entity> getEntities() {
+    public Set<Entity> getEntities() {
             return entities;
     }
 }
