@@ -2,21 +2,21 @@ package com.syfds.xsd2lplantuml;
 
 public class Relation {
 
-    private Element source;
-    private Element target;
+    private Entity source;
+    private Entity target;
     private RelationType type;
 
-    public Relation(Element source, Element target, RelationType type) {
+    public Relation(Entity source, Entity target, RelationType type) {
         this.source = source;
         this.target = target;
         this.type = type;
     }
 
-    public Element getSource() {
+    public Entity getSource() {
         return source;
     }
 
-    public Element getTarget() {
+    public Entity getTarget() {
         return target;
     }
 

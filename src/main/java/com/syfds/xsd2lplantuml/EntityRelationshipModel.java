@@ -4,13 +4,13 @@ import java.util.List;
 
 public class EntityRelationshipModel {
 
-    private List<Element> elements;
+    private List<Entity> entities;
     private List<Relation> relationships;
 
 
 
-    public EntityRelationshipModel(List<Element> elements, List<Relation> relationships) {
-        this.elements = elements;
+    public EntityRelationshipModel(List<Entity> entities, List<Relation> relationships) {
+        this.entities = entities;
         this.relationships = relationships;
     }
 
@@ -18,7 +18,7 @@ public class EntityRelationshipModel {
         return relationships;
     }
 
-    public List<Element> getElements() {
-            return elements;
+    public List<Entity> getEntities() {
+            return entities;
     }
 }

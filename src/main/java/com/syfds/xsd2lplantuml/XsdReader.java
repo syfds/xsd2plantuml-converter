@@ -18,17 +18,17 @@ public class XsdReader {
     }
 
     public EntityRelationshipModel map(XsdParser parser) {
-        List<Element> elements = new ArrayList<>();
+        List<Entity> entities = new ArrayList<>();
         List<Relation> relationships = new ArrayList<>();
 
         parser.getResultXsdElements().forEach(xsdElement -> {
-            Element element = mapElement(xsdElement);
-            elements.add(element);
+            Entity entity = mapElement(xsdElement);
+            entities.add(entity);
 
-            element.getAttributeList().forEach(attr -> {
+            entity.getAttributeList().forEach(attr -> {
                 if (attr.getXsdType() != null) {
-                    Element subElement = mapElement(attr.getXsdType());
-                    elements.add(subElement);
+                    Entity subEntity = mapElement(attr.getXsdType());
+                    entities.add(subEntity);
                 }
             });
 //            if (xsdElement.getXsdComplexType() != null) {
@@ -40,43 +40,43 @@ public class XsdReader {
 //            }
         });
 
-        return new EntityRelationshipModel(elements, relationships);
+        return new EntityRelationshipModel(entities, relationships);
     }
 
 
-    private Element mapElement(XsdElement xsdElement) {
-        Element element = new Element(xsdElement.getName());
+    private Entity mapElement(XsdElement xsdElement) {
+        Entity entity = new Entity(xsdElement.getName());
         if (xsdElement.getXsdComplexType() != null) {
             XsdComplexType xsdComplexType = xsdElement.getXsdComplexType();
-            element.setComment(getDocumentation(xsdComplexType));
+            entity.setComment(getDocumentation(xsdComplexType));
             xsdComplexType.getElements().forEach(elem -> {
-                mapAttribute(elem, element);
+                mapAttribute(elem, entity);
             });
 
             xsdComplexType.getXsdAttributes().forEach(xsdAttribute -> {
                 Attribute attr = new Attribute(xsdAttribute.getName(), xsdAttribute.getType(), getDocumentation(xsdAttribute));
-                element.addAttribute(attr);
+                entity.addAttribute(attr);
             });
         }
-        return element;
+        return entity;
     }
 
-    private static void mapAttribute(ReferenceBase attribute, Element element) {
+    private static void mapAttribute(ReferenceBase attribute, Entity entity) {
         if (attribute instanceof NamedConcreteElement namedElement) {
-            mapNamedConcreteElement(namedElement, element);
+            mapNamedConcreteElement(namedElement, entity);
         } else {
             throw new IllegalArgumentException("Unsupported element type: " + attribute.getClass().getName());
         }
     }
 
-    private static void mapNamedConcreteElement(NamedConcreteElement namedElement, Element element) {
+    private static void mapNamedConcreteElement(NamedConcreteElement namedElement, Entity entity) {
         XsdElement element1 = (XsdElement) namedElement.getElement();
         Attribute attr = new Attribute(namedElement.getName(), element1.getType(), getDocumentation(namedElement.getElement()));
 
         if (element1.getXsdComplexType() != null) {
             attr.setXsdType(element1);
         }
-        element.addAttribute(attr);
+        entity.addAttribute(attr);
     }
 
     private static String getDocumentation(XsdNamedElements element) {
