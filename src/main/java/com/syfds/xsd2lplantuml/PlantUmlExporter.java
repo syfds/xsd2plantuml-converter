@@ -2,7 +2,7 @@ package com.syfds.xsd2lplantuml;
 
 public class PlantUmlExporter {
 
-    public String export(EntityRelationshipModel model){
+    public String export(EntityRelationshipModel model) {
         StringBuilder sb = new StringBuilder();
         sb.append("@startuml\n");
 
@@ -20,9 +20,7 @@ public class PlantUmlExporter {
             String target = relation.getTarget();
 
             RelationType type = relation.getType();
-            sb.append(source).append(" ")
-              .append(type.getPlantumlNotation())
-              .append(target);
+            sb.append(source).append(" ").append(type.getPlantumlNotation()).append(target);
             sb.append("\n");
         });
     }
@@ -31,16 +29,15 @@ public class PlantUmlExporter {
         for (Entity entity : model.getEntities()) {
             sb.append("entity \"").append(entity.getUniqueName()).append("\" {\n");
             for (Attribute attribute : entity.getAttributeList()) {
-                sb.append("  ").append(attribute.getName())
-                  .append(" : ").append(attribute.getType());
                 if (attribute.getComment() != null && !attribute.getComment().isEmpty()) {
-                    sb.append(" // ").append(attribute.getComment());
+                    sb.append(" <color:grey>// ").append(attribute.getComment()).append("</color>\n");
                 }
+                sb.append("  ").append(attribute.getName()).append(" : ").append(attribute.getType());
                 sb.append("\n");
             }
             sb.append("}\n");
             if (entity.getComment() != null && !entity.getComment().isEmpty()) {
-                sb.append("note top of ").append(entity.getUniqueName()).append(": ").append(entity.getComment()).append("\n");
+                sb.append("note top of ").append(entity.getUniqueName()).append("\n").append(entity.getComment()).append("\n").append("end note\n");
             }
         }
     }

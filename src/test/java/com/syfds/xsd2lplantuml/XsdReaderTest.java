@@ -34,7 +34,6 @@ public class XsdReaderTest {
     public void multipleElementsAndRelations() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/person.xsd"));
         assertThat(model.getEntities()).hasSize(5);
-
         assertThat(model.getRelationships()).hasSize(5);
     }
 
@@ -46,8 +45,15 @@ public class XsdReaderTest {
     }
 
     @Test
-    public void test2() {
+    public void testMultipleImportsAndAnnotation() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/animals/main.xsd"));
+
+        assertThat(model.getEntities()).hasSize(3);
+        assertThat(model.getRelationships()).hasSize(2);
+
+        Entity entity = model.getEntities().stream().filter(e -> e.getUniqueName().equals("Zoo")).findFirst().orElseThrow();
+        assertThat(entity.getComment()).isEqualTo("Here is an example for an annotation");
+
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);
     }
