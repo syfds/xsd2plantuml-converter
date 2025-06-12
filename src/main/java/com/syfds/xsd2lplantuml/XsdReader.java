@@ -31,7 +31,7 @@ public class XsdReader {
                 XsdComplexType resolvedType = findComplexTypeByName(parser, entity.getType());
                 Entity complextTypeAsEntity = mapToEntity(resolvedType);
                 entities.add(complextTypeAsEntity);
-                addRelations(complextTypeAsEntity, relationships);
+                createEntitiesFromAttributesRecursively(parser, complextTypeAsEntity, relationships, entities);
             }
         });
 
@@ -45,16 +45,6 @@ public class XsdReader {
                         if (attr.isComplexType()) {
                             relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
                             if (attr.getInternalComplexType() != null) {
-//                                XsdAbstractElement childElement = attr.getInternalComplexType().getXsdChildElement();
-//                                if(childElement instanceof XsdSequence sequence){
-//                                    childElement.getXsdElements().forEach(element -> {
-//                                        if(element instanceof  XsdElement xsdElement) {
-//                                            Entity innerEntity = mapToEntity(xsdElement);
-//                                            allEntities.add(innerEntity);
-//                                            createEntitiesFromAttributesRecursively(parser, innerEntity, relationships, allEntities);
-//                                        }
-//                                    });
-//                                }
                                 Entity extraEntityForInnerComplexType = mapToEntity(attr.getInternalComplexType());
                                 allEntities.add(extraEntityForInnerComplexType);
                                 createEntitiesFromAttributesRecursively(parser, extraEntityForInnerComplexType, relationships, allEntities);
