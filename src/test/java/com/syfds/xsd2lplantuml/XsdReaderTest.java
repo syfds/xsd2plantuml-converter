@@ -43,6 +43,14 @@ public class XsdReaderTest {
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);
     }
+    @Test
+    public void testTransitiveTypes() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_element_and_transitive_types.xsd"));
+        assertThat(model.getEntities()).hasSize(4);
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
 
     @Test
     public void testMultipleImportsAndAnnotation() {
