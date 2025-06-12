@@ -29,15 +29,26 @@ public class PlantUmlExporter {
         for (Entity entity : model.getEntities()) {
             sb.append("entity \"").append(entity.getUniqueName()).append("\" {\n");
             for (Attribute attribute : entity.getAttributeList()) {
-                if (attribute.getComment() != null && !attribute.getComment().isEmpty()) {
-                    sb.append(" <color:grey>// ").append(attribute.getComment()).append("</color>\n");
-                }
+                appendCommentIfExisting(sb, attribute);
                 sb.append("  ").append(attribute.getName()).append(" : ").append(attribute.getType());
                 sb.append("\n");
             }
             sb.append("}\n");
             if (entity.getComment() != null && !entity.getComment().isEmpty()) {
                 sb.append("note top of ").append(entity.getUniqueName()).append("\n").append(entity.getComment()).append("\n").append("end note\n");
+            }
+        }
+    }
+
+    private static void appendCommentIfExisting(StringBuilder sb, Attribute attribute) {
+        if (attribute.getComment() != null && !attribute.getComment().isEmpty()) {
+            String[] commentLines = attribute.getComment().split("\n");
+            for (String line : commentLines) {
+                boolean shouldSkipEmptyLine = line.trim().isEmpty();
+                if(shouldSkipEmptyLine) {
+                    continue;
+                }
+                sb.append("  <color:grey>// ").append(line).append("</color>\n");
             }
         }
     }

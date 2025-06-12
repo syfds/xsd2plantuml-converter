@@ -16,6 +16,13 @@ public class Entity {
     }
 
 
+    public Attribute findAttributeByName(String name ) {
+        return attributeList.stream()
+                .filter(attribute -> attribute.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Attribute with name " + name + " not found in entity " + uniqueName));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

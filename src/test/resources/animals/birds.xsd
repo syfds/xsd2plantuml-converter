@@ -9,7 +9,10 @@
             <xs:element name="Name" type="xs:string"/>
             <xs:element name="Species" type="xs:string">
                 <xs:annotation>
-                    <xs:documentation>Should be an enum!</xs:documentation>
+                    <xs:documentation>
+                        Should be an enum!
+                        A multiline documentation tag.
+                    </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="Age" type="xs:integer"/>

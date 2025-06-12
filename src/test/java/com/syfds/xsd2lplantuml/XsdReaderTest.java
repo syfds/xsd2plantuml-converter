@@ -51,8 +51,14 @@ public class XsdReaderTest {
         assertThat(model.getEntities()).hasSize(3);
         assertThat(model.getRelationships()).hasSize(2);
 
-        Entity entity = model.getEntities().stream().filter(e -> e.getUniqueName().equals("Zoo")).findFirst().orElseThrow();
-        assertThat(entity.getComment()).isEqualTo("Here is an example for an annotation");
+        Entity zoo = model.findEntityByName("Zoo");
+        assertThat(zoo.getComment()).isEqualTo("Here is an example for an annotation");
+
+        Entity bird = model.findEntityByName("Bird");
+
+        assertThat(bird.findAttributeByName("Species").getComment())
+                .containsAnyOf("Should be an enum!", "A multiline documentation tag.");
+
 
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);

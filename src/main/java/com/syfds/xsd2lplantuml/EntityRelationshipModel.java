@@ -22,4 +22,11 @@ public class EntityRelationshipModel {
     public Set<Entity> getEntities() {
             return entities;
     }
+
+    public Entity findEntityByName(String name) {
+        return entities.stream()
+                .filter(entity -> entity.getUniqueName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Entity with name " + name + " not found"));
+    }
 }
