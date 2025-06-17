@@ -28,9 +28,11 @@
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID" use="required"/>
     </xs:complexType>
-    <xs:complexType name="descriptionType">
-        <xs:all>
-            <xs:element name="descriptionText" minOccurs="0" type="xs:string" />
-        </xs:all>
-    </xs:complexType>
+    <xs:simpleType name="descriptionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="short"/>
+            <xs:enumeration value="long"/>
+            <xs:enumeration value="detailed"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
