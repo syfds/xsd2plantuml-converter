@@ -53,11 +53,22 @@ public class PlantUmlExporter {
     }
 
     private static String getType(Attribute attribute) {
-        String type = attribute.getType();
+        StringBuilder type = new StringBuilder(attribute.getType());
         if (attribute.getRelationType() == RelationType.ONE_TO_MANY) {
-            type = type + "[]";
+            type.append("[]");
         }
-        return type;
+
+        if(attribute.isEnumeration()){
+            type = new StringBuilder("enum {");
+            for (String value : attribute.getEnumValues()) {
+                type.append(" ").append(value).append(",");
+            }
+            if (type.charAt(type.length() - 1) == ',') {
+                type.deleteCharAt(type.length() - 1); // Remove the last comma
+            }
+            type.append(" }");
+        }
+        return type.toString();
     }
 
     private static void appendCommentIfExisting(StringBuilder sb, Attribute attribute) {
