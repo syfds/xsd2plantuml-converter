@@ -10,7 +10,6 @@
             <xs:element name="dead" type="xs:date" minOccurs="0"/>
             <xs:element name="qualification" type="xs:string" minOccurs="0"/>
             <xs:element name="count" type="countryType" minOccurs="0"/>
-
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID" use="required"/>
     </xs:complexType>

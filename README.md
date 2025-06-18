@@ -24,6 +24,9 @@ Given an `XSD` file like this:
       </xs:complexType>
    </xs:element>
    <xs:complexType name="AddressType">
+      <xs:annotation>
+         <xs:documentation>Describes the address type</xs:documentation>
+      </xs:annotation>
       <xs:sequence>
          <xs:element name="Street" type="xs:string"/>
          <xs:element name="City" type="xs:string"/>
@@ -45,6 +48,9 @@ entity "AddressType" {
   Street : xs:string
   City : xs:string
 }
+note top of AddressType
+Describes the address type
+end note
 Person "1"--"1"AddressType
 @enduml
 ```
