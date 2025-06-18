@@ -1,9 +1,9 @@
-# WIP: Currently not all XSD elements are supported, but the basic structure is in place. Stay tuned.
-
 # XSD to PlantUML Converter
-
 ## Overview
 This project is a Java application that converts XSD (XML Schema Definition) files into PlantUML diagrams. It reads an XSD file, processes its structure, and generates a visual representation of the entity-relationship model in PlantUML format.
+
+**Important:**
+WIP: Currently not all XSD elements are supported, but the basic structure is in place. Stay tuned.
 
 ## Features
 - Parse XSD files to extract entity-relationship models.
@@ -11,7 +11,7 @@ This project is a Java application that converts XSD (XML Schema Definition) fil
 - Command-line interface for easy usage.
 
 ## Example
-Given an XSD file like this:
+Given an `XSD` file like this:
 ```xml
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
    <xs:element name="Person">
@@ -31,7 +31,9 @@ Given an XSD file like this:
    </xs:complexType>
 </xs:schema>
 ```
-The output in PlantUML format will look like this:
+The output in `PlantUML` format will look like this:
+
+
 ```plantuml
 @startuml
 entity "Person" {
@@ -46,6 +48,9 @@ entity "AddressType" {
 Person "1"--"1"AddressType
 @enduml
 ```
+or as image
+
+![Example PlantUML Diagram](docs/readme_example.png)
 
 
 ## Requirements
