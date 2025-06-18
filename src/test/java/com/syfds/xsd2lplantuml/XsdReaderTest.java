@@ -68,6 +68,14 @@ public class XsdReaderTest {
         System.out.println(plantumlAsString);
     }
     @Test
+    public void testPersonAddress() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/person_address.xsd"));
+        assertThat(model.getEntities()).hasSize(2);
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
+    @Test
     public void testMultipleImportsAndAnnotation() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/animals/main.xsd"));
 
