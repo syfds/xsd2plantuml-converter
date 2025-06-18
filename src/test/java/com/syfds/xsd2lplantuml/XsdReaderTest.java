@@ -52,6 +52,14 @@ public class XsdReaderTest {
         System.out.println(plantumlAsString);
     }
     @Test
+    public void testTransitiveTypesSimpleContent() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_element_and_transitive_types_simple_content.xsd"));
+        assertThat(model.getEntities()).hasSize(5);
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
+    @Test
     public void testSimpleTypeAndEnum() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_simple_type_with_enum.xsd"));
         assertThat(model.getEntities()).hasSize(5);
