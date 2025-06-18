@@ -6,12 +6,9 @@ import java.nio.file.Path;
 
 /**
  * Hello world!
- *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main(String[] args) {
         if (args.length != 2) {
             System.err.println("Usage: java -jar xsd2plantuml.jar <input-xsd-filepath> <output-filepath>");
             System.exit(1);
@@ -23,6 +20,7 @@ public class App
         try {
             XsdReader xsdReader = new XsdReader();
             EntityRelationshipModel model = xsdReader.mapToModel(inputFilePath);
+            model.printStatistics();
 
             String outputContent = new PlantUmlExporter().export(model);
             Files.writeString(Path.of(outputFilePath), outputContent);
@@ -32,5 +30,6 @@ public class App
             System.err.println("Error writing to output file: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error processing XSD file: " + e.getMessage());
-        }    }
+        }
+    }
 }

@@ -158,15 +158,10 @@ public class XsdReader {
         if (attribute instanceof NamedConcreteElement namedElement) {
             mapNamedConcreteElement(namedElement, entity);
         } else {
-
-            if(attribute instanceof ConcreteElement concreteElement){
-                if(attribute.getElement() != null) {
-                    System.out.println("Unsupported ConcreteElement type: " + concreteElement.getElement().getClass());
-                    System.out.println("Unsupported Type attributes : " + attribute.getElement().getAttributesMap());
-                }
+            if (attribute.getElement() != null) {
+                System.out.println("Unsupported element type: " + attribute.getElement().getClass() + " with attributes" +
+                        " " + attribute.getElement().getAttributesMap() + ", will be skipped.");
             }
-
-            throw new IllegalArgumentException("Unsupported element type: " + attribute.getClass().getName());
         }
     }
 
@@ -175,7 +170,6 @@ public class XsdReader {
         boolean isComplexType = xsdElement.getXsdComplexType() != null;
         boolean isExternalComplexType = isComplexType && xsdElement.getXsdComplexType().getName() != null;
         boolean isSimpleType = xsdElement.getXsdSimpleType() != null;
-        boolean isExternalSimpleType = isSimpleType && xsdElement.getXsdSimpleType().getName() != null;
 
         boolean isInnerComplexType = isComplexType && !isExternalComplexType;
         Attribute attr;

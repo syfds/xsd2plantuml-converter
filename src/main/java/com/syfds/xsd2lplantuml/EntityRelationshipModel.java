@@ -29,4 +29,10 @@ public class EntityRelationshipModel {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Entity with name " + name + " not found"));
     }
+
+    public void printStatistics(){
+        System.out.println("Statistics:");
+        System.out.println("Entities: " + entities.size());
+        System.out.println("Relationships: " + relationships.size());
+    }
 }
