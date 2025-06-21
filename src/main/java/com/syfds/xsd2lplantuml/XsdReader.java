@@ -33,7 +33,20 @@ public class XsdReader {
             }
         });
 
+        processNotReferenceComplexTypes(parser, entities, relationships);
+
         return new EntityRelationshipModel(entities, relationships);
+    }
+
+    private void processNotReferenceComplexTypes(XsdParser parser, Set<Entity> entities, Set<Relation> relationships) {
+        parser.getResultXsdSchemas().flatMap(XsdSchema::getXsdElements).filter(element -> element instanceof XsdComplexType).map(element -> (XsdComplexType) element).filter(complexType -> !entities.contains(new Entity(complexType.getName()))).forEach(notYetHandledComplexType -> {
+            Entity complextTypeAsEntity = mapToEntity(notYetHandledComplexType);
+            entities.add(complextTypeAsEntity);
+            createEntitiesFromAttributesRecursively(parser, complextTypeAsEntity, relationships, entities);
+            if (complextTypeAsEntity.getType() != null) {
+                resolveType(complextTypeAsEntity, parser, relationships, entities);
+            }
+        });
     }
 
     private void resolveType(Entity entity, XsdParser parser, Set<Relation> relationships, Set<Entity> entities) {
@@ -48,7 +61,7 @@ public class XsdReader {
         Optional.ofNullable(entity.getAttributeList()).ifPresent(attributes -> {
             attributes.forEach(attr -> {
                 if (attr.isComplexType()) {
-                    relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
+
                     if (attr.getInternalComplexType() != null) {
                         Entity extraEntityForInnerComplexType = mapToEntity(attr.getInternalComplexType());
                         allEntities.add(extraEntityForInnerComplexType);
@@ -59,25 +72,18 @@ public class XsdReader {
                     } else {
                         XsdComplexType resolvedType = findComplexTypeByName(parser, attr.getType());
                         Entity complextTypeAsEntity = mapToEntity(resolvedType);
-                        allEntities.add(complextTypeAsEntity);
-                        createEntitiesFromAttributesRecursively(parser, complextTypeAsEntity, relationships, allEntities);
+                        boolean isNewEntity = allEntities.add(complextTypeAsEntity);
+                        if (isNewEntity) {
+                            createEntitiesFromAttributesRecursively(parser, complextTypeAsEntity, relationships, allEntities);
+                        }
                     }
+                    relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
                 } else if (attr.isSimpleType()) {
                     relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
                     XsdSimpleType simpleTypeByName = findSimpleTypeByName(parser, attr.getType());
                     Entity externAttributeType = mapToEntity(simpleTypeByName);
                     allEntities.add(externAttributeType);
                     createEntitiesFromAttributesRecursively(parser, externAttributeType, relationships, allEntities);
-                }
-            });
-        });
-    }
-
-    private static void addRelations(Entity entity, Set<Relation> relationships) {
-        Optional.ofNullable(entity.getAttributeList()).ifPresent(attributes -> {
-            attributes.forEach(attr -> {
-                if (attr.isComplexType()) {
-                    relationships.add(new Relation(entity.getUniqueName(), attr.getType(), attr.getRelationType()));
                 }
             });
         });
@@ -158,9 +164,19 @@ public class XsdReader {
         if (attribute instanceof NamedConcreteElement namedElement) {
             mapNamedConcreteElement(namedElement, entity);
         } else {
-            if (attribute.getElement() != null) {
-                System.out.println("Unsupported element type: " + attribute.getElement().getClass() + " with attributes" +
-                        " " + attribute.getElement().getAttributesMap() + ", will be skipped.");
+
+            if (attribute.getElement() instanceof XsdChoice choice) {
+                if (choice.getElements() != null) {
+                    choice.getElements().forEach(elem -> {
+                        if (elem instanceof NamedConcreteElement elemNamed) {
+                            mapAttribute(elemNamed, entity);
+                        }
+                    });
+                } else {
+                    System.out.println("Choice element without elements found, will be skipped.");
+                }
+            } else if (attribute.getElement() != null) {
+                System.out.println("Unsupported element type: " + attribute.getElement().getClass() + " with attributes" + " " + attribute.getElement().getAttributesMap() + ", will be skipped.");
             }
         }
     }

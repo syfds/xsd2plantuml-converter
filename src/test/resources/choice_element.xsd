@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://example.com/ns/collection"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://example.com/ns/collection">
+
+    <xs:element name="exampleElement" type="exampleType"/>
+    <xs:complexType name="exampleType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:choice>
+                <xs:element name="optionA" type="optionAType"/>
+                <xs:element name="optionB" type="optionBType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="optionAType">
+        <xs:sequence>
+            <xs:element name="detail" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="optionBType">
+        <xs:sequence>
+            <xs:element name="code" type="xs:integer"/>
+            <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="notReferencedType">
+        <xs:sequence>
+            <xs:element name="code" type="xs:integer"/>
+            <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+</xs:schema>
