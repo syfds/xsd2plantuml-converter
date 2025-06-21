@@ -51,13 +51,6 @@ public class XsdReaderTest {
         System.out.println(plantumlAsString);
     }
     @Test
-    public void testArkiv() {
-
-        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/arkivstruktur.xsd"));
-        String plantumlAsString = new PlantUmlExporter().export(model);
-        System.out.println(plantumlAsString);
-    }
-    @Test
     public void testTransitiveTypes() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_element_and_transitive_types.xsd"));
         assertThat(model.getEntities()).hasSize(5);
