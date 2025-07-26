@@ -1,6 +1,7 @@
 package com.syfds.xsd2lplantuml;
 
 public enum RelationType {
+    EXTENSION(" <|--"),
     TYPE_OF("*-"),
     ONE_TO_ONE("\"1\"--\"1\""),
     ONE_TO_MANY("\"1\"--\"*\""),

@@ -50,7 +50,7 @@ public class XsdReader {
     }
 
     private void resolveType(Entity entity, XsdParser parser, Set<Relation> relationships, Set<Entity> entities) {
-        relationships.add(new Relation(entity.getUniqueName(), entity.getType(), RelationType.TYPE_OF));
+        relationships.add(new Relation(entity.getUniqueName(), entity.getType(), entity.getRelationType()));
         XsdComplexType resolvedType = findComplexTypeByName(parser, entity.getType());
         Entity complextTypeAsEntity = mapToEntity(resolvedType);
         entities.add(complextTypeAsEntity);
@@ -103,6 +103,15 @@ public class XsdReader {
             entity.addAttribute(attr);
         });
 
+        if (resolvedType.getComplexContent() != null) {
+            Optional.ofNullable(resolvedType.getComplexContent().getXsdExtension().getElements()).ifPresent(elems -> {
+                elems.forEach(elem -> {
+                    mapAttribute(elem, entity);
+                });
+            });
+            entity.setExtensionType(resolvedType.getComplexContent().getXsdExtension().getBase().getName());
+        }
+
         return entity;
     }
 
@@ -115,13 +124,63 @@ public class XsdReader {
 
 
         if (resolvedType.getRestriction() != null) {
-            List<String> enumValues = resolvedType.getRestriction().getEnumeration().stream().map(XsdStringRestrictions::getValue).toList();
-
-            Attribute attr = new Attribute("enumeration", "enumeration", getDocumentation(resolvedType.getRestriction()), enumValues);
+            Attribute attr = createAttributeForRestriction(resolvedType);
             entity.addAttribute(attr);
         }
 
         return entity;
+    }
+
+    private static Attribute createAttributeForRestriction(XsdSimpleType resolvedType) {
+        StringBuilder restrictions = new StringBuilder();
+        if (resolvedType.getRestriction().getMinLength() != null) {
+            restrictions.append("minLength=").append(resolvedType.getRestriction().getMinLength().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getMaxLength() != null) {
+            restrictions.append("maxLength=").append(resolvedType.getRestriction().getMaxLength().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getPattern() != null) {
+            restrictions.append("pattern=").append(resolvedType.getRestriction().getPattern().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getWhiteSpace() != null) {
+            restrictions.append("whiteSpace=").append(resolvedType.getRestriction().getWhiteSpace().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getTotalDigits() != null) {
+            restrictions.append("totalDigits=").append(resolvedType.getRestriction().getTotalDigits().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getFractionDigits() != null) {
+            restrictions.append("fractionDigits=").append(resolvedType.getRestriction().getFractionDigits().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getLength() != null) {
+            restrictions.append("length=").append(resolvedType.getRestriction().getLength().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getMaxInclusive() != null) {
+            restrictions.append("maxInclusive=").append(resolvedType.getRestriction().getMaxInclusive().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getMaxExclusive() != null) {
+            restrictions.append("maxExclusive=").append(resolvedType.getRestriction().getMaxExclusive().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getMinInclusive() != null) {
+            restrictions.append("minInclusive=").append(resolvedType.getRestriction().getMinInclusive().getValue()).append(", ");
+        }
+        if (resolvedType.getRestriction().getMinExclusive() != null) {
+            restrictions.append("minExclusive=").append(resolvedType.getRestriction().getMinExclusive().getValue()).append(", ");
+        }
+        // append enum values to string
+        if (resolvedType.getRestriction().getEnumeration() != null && !resolvedType.getRestriction().getEnumeration().isEmpty()) {
+            String enumValues = resolvedType.getRestriction().getEnumeration().stream().map(XsdStringRestrictions::getValue).collect(Collectors.joining(", "));
+            restrictions.append("enumeration={").append(enumValues).append("}, ");
+        }
+        if (!restrictions.isEmpty()) {
+            restrictions.setLength(restrictions.length() - 2); // remove last comma and space
+        }
+
+        String documentation = getDocumentation(resolvedType.getRestriction());
+        if (documentation == null) {
+            documentation = "";
+        }
+
+        return new Attribute("restriction", "restriction", documentation + " (" + restrictions + ")");
     }
 
     private XsdComplexType findComplexTypeByName(XsdParser parser, String typeName) {
