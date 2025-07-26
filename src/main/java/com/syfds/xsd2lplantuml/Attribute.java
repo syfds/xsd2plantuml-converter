@@ -1,19 +1,19 @@
 package com.syfds.xsd2lplantuml;
 
 import org.xmlet.xsdparser.xsdelements.XsdComplexType;
-import org.xmlet.xsdparser.xsdelements.XsdElement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Attribute {
-    private String name;
-    private String type;
-    private XsdElement xsdType;
+    private static final String DEFAULT_TYPE_XSD = "xs:anyType";
+    private final String name;
+    private final String type;
+
     private boolean isComplexType = false;
     private XsdComplexType internalComplexType;
-    private String comment;
+    private final String comment;
     private RelationType relationType;
     private boolean simpleType;
     private boolean isEnumeration = false;
@@ -21,24 +21,20 @@ public class Attribute {
 
     public Attribute(String name, String type, String comment) {
         this.name = name;
-        this.type = type;
+
+        boolean typeSet = type != null;
+        this.type = typeSet ? type : DEFAULT_TYPE_XSD;
+        if (!typeSet)
+            System.out.println("Warning: Type for attribute '" + name + "' is not set, using default type '" + DEFAULT_TYPE_XSD + "'.");
+
         this.comment = comment;
     }
+
     public Attribute(String name, String type, String comment, List<String> enumValues) {
         // constructor for enumeration attributes
-        this.name = name;
-        this.type = type;
-        this.comment = comment;
+        this(name, type, comment);
         this.enumValues = enumValues;
         this.isEnumeration = true;
-    }
-
-    public void setXsdType(XsdElement xsdType) {
-        this.xsdType = xsdType;
-    }
-
-    public XsdElement getXsdType() {
-        return xsdType;
     }
 
     public String getName() {
@@ -58,7 +54,6 @@ public class Attribute {
         return "Attribute{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", xsdType=" + xsdType +
                 ", comment='" + comment + '\'' +
                 '}';
     }

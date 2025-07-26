@@ -86,6 +86,18 @@ public class XsdReaderTest {
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);
     }
+
+    @Test
+    public void testSimpleType_withoutType() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_element_and_no_type.xsd"));
+        assertThat(model.getEntities()).hasSize(2);
+
+        Attribute restrictionAttribute = model.findEntityByName("personType").findAttributeByName("elementNoType");
+        assertThat(restrictionAttribute).isNotNull();
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
     @Test
     public void testPersonAddress() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/person_address.xsd"));
