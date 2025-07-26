@@ -5,6 +5,7 @@ public class PlantUmlExporter {
     public String export(EntityRelationshipModel model) {
         StringBuilder sb = new StringBuilder();
         sb.append("@startuml\n");
+        sb.append("!pragma layout smetana\n");
 
         addEntities(model, sb);
         addRelations(model, sb);
@@ -79,7 +80,7 @@ public class PlantUmlExporter {
                 if (shouldSkipEmptyLine) {
                     continue;
                 }
-                sb.append("  <color:grey>// ").append(line).append("</color>\n");
+                sb.append("  {field}<color:grey>// ").append(line).append("</color>\n");
             }
         }
     }

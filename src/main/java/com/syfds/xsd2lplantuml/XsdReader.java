@@ -166,7 +166,10 @@ public class XsdReader {
         if (resolvedType.getRestriction().getMinExclusive() != null) {
             restrictions.append("minExclusive=").append(resolvedType.getRestriction().getMinExclusive().getValue()).append(", ");
         }
-        // append enum values to string
+        if (resolvedType.getRestriction().getBase() != null) {
+            restrictions.append("base=").append(resolvedType.getRestriction().getBase()).append(", ");
+        }
+
         if (resolvedType.getRestriction().getEnumeration() != null && !resolvedType.getRestriction().getEnumeration().isEmpty()) {
             String enumValues = resolvedType.getRestriction().getEnumeration().stream().map(XsdStringRestrictions::getValue).collect(Collectors.joining(", "));
             restrictions.append("enumeration={").append(enumValues).append("}, ");
