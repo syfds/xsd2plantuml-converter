@@ -75,9 +75,24 @@ public class XsdReaderTest {
         System.out.println(plantumlAsString);
     }
     @Test
+    public void testSimpleTypeAndMinMaxLen() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_simple_type_with_minLength.xsd"));
+        assertThat(model.getEntities()).hasSize(5);
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
+    @Test
     public void testPersonAddress() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/person_address.xsd"));
         assertThat(model.getEntities()).hasSize(2);
+
+        String plantumlAsString = new PlantUmlExporter().export(model);
+        System.out.println(plantumlAsString);
+    }
+    @Test
+    public void testArkitektur() {
+        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/arkivstruktur.xsd"));
 
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);

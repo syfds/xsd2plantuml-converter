@@ -8,6 +8,7 @@ public class Entity {
 
     private String uniqueName;
     private String type;
+    private String extensionType;
     private String comment;
     private List<Attribute> attributeList = new ArrayList<>();
 
@@ -69,10 +70,27 @@ public class Entity {
     }
 
     public String getType() {
-        return type;
+        if (type != null) {
+            return type;
+        } else if (extensionType != null) {
+            return extensionType;
+        }
+        return null;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setExtensionType(String extensionType) {
+        this.extensionType = extensionType;
+    }
+
+    public RelationType getRelationType(){
+        if (extensionType != null) {
+            return RelationType.EXTENSION;
+        } else {
+            return RelationType.TYPE_OF;
+        }
     }
 }
