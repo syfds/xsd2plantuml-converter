@@ -75,9 +75,13 @@ public class XsdReaderTest {
         System.out.println(plantumlAsString);
     }
     @Test
-    public void testSimpleTypeAndMinMaxLen() {
+    public void testSimpleTypeAndRestictionMinMaxLen() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/only_person_simple_type_with_minLength.xsd"));
         assertThat(model.getEntities()).hasSize(5);
+
+        Attribute restrictionAttribute = model.findEntityByName("descriptionType").findAttributeByName("restriction");
+        assertThat(restrictionAttribute.getType()).isEqualTo("restriction");
+        assertThat(restrictionAttribute.getComment()).isNotEmpty();
 
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);
@@ -90,13 +94,15 @@ public class XsdReaderTest {
         String plantumlAsString = new PlantUmlExporter().export(model);
         System.out.println(plantumlAsString);
     }
-    @Test
-    public void testArkitektur() {
-        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/arkivstruktur.xsd"));
 
-        String plantumlAsString = new PlantUmlExporter().export(model);
-        System.out.println(plantumlAsString);
-    }
+    // only for local testing
+//    @Test
+//    public void testArkitektur() {
+//        EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/arkivstruktur.xsd"));
+//
+//        String plantumlAsString = new PlantUmlExporter().export(model);
+//        System.out.println(plantumlAsString);
+//    }
     @Test
     public void testMultipleImportsAndAnnotation() {
         EntityRelationshipModel model = new XsdReader().mapToModel(getPath("/animals/main.xsd"));
