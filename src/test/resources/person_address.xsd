@@ -13,7 +13,13 @@
             <xs:documentation>Describes the address type</xs:documentation>
         </xs:annotation>
             <xs:sequence>
-                <xs:element name="Street" type="xs:string"/>
+                <xs:element name="Street" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Describes the street element
+
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element name="City" type="xs:string"/>
             </xs:sequence>
     </xs:complexType>

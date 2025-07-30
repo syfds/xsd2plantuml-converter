@@ -104,6 +104,7 @@ public class XsdReaderTest {
         assertThat(model.getEntities()).hasSize(2);
 
         String plantumlAsString = new PlantUmlExporter().export(model);
+        assertThat(plantumlAsString).contains("{field}<color:grey>// Describes the street element</color>");
         System.out.println(plantumlAsString);
     }
 
