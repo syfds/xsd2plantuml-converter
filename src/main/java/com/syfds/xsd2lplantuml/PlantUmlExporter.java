@@ -76,11 +76,12 @@ public class PlantUmlExporter {
         if (attribute.getComment() != null && !attribute.getComment().isEmpty()) {
             String[] commentLines = attribute.getComment().split("\n");
             for (String line : commentLines) {
-                boolean shouldSkipEmptyLine = line.trim().isEmpty();
+                String trimmedLine = line.trim();
+                boolean shouldSkipEmptyLine = trimmedLine.isEmpty();
                 if (shouldSkipEmptyLine) {
                     continue;
                 }
-                sb.append("  {field}<color:grey>// ").append(line).append("</color>\n");
+                sb.append("  {field}<color:grey>// ").append(trimmedLine).append("</color>\n");
             }
         }
     }
